@@ -7,12 +7,12 @@ you _will_ most likely need linux or mac to run these things. the database used 
 
 ## prerequsites  
 i used python venv for this:  
-´´´bash  
+```
 cd /wherever/you/cloned/the/GH/repo  
 python -m venv yourVenvName  
 source yourVenvName/bin/activate  
 pip install -r requirements.txt  
-´´´
+```
 
 ## scripts  
 testEmbeddings.py  
