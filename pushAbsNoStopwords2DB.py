@@ -1,6 +1,4 @@
 from pymilvus import MilvusClient, DataType, Function, FunctionType
-# from pymilvus import model
-# from pymilvus.model.dense import SentenceTransformerEmbeddingFunction
 
 import sys
 import stopwordsiso
@@ -10,20 +8,8 @@ import json_stream
 
 import time
 
-'''
-timing with dumplimit 10k:
-real	807m54.390s
-user	431m17.807s
-sys	378m57.131s
-
-timing with dumplimit 100k (added 1M entries!)
-real	1120m44.277s
-user	581m23.750s
-sys	560m40.625s
-'''
-
 DUMPLIMIT = 100000;
-RESETDB = 0;
+RESETDB = 0; #set to >0 if you want to throw away the old DB
 COLLECTIONNAME = 'demo_collection';
 
 print('spinning up milvus');
@@ -72,6 +58,7 @@ bm25_function = Function(
 
 schema.add_function(bm25_function);
 
+#connect to a database
 dbClient = MilvusClient('dbpediaAbstractsNoStopwords.db');
 
 if RESETDB:
@@ -93,14 +80,6 @@ if RESETDB:
         schema = schema,
         index_params = index_params,
         );
-    #sys.exit();
-
-
-#
-# embedding_fn = SentenceTransformerEmbeddingFunction(
-#     model_name = 'LaBSE',
-#     device = 'cpu',
-#     );
 
 #cache some stopwords
 cachedStopWords = {
@@ -110,17 +89,7 @@ cachedStopWords = {
     };
 
 #input data from external file
-testfile = './jsondata/EMBEDDED_catsAndAbstracts_from_0_to_1000000.json';
-# testfile = './jsondata/EMBEDDED_catsAndAbstracts_from_1000000_to_2000000.json';
-# testfile = './jsondata/00_EMBEDDED_catsAndAbstracts_from_0_to_1000.json';
-testfile = './jsondata/EMBEDDED_catsAndAbstracts_from_2000000_to_3000000.json';
-testfile = './jsondata/EMBEDDED_catsAndAbstracts_from_3000000_to_4000000.json';
-testfile = './jsondata/EMBEDDED_catsAndAbstracts_from_4000000_to_5000000.json';
-testfile = './jsondata/EMBEDDED_catsAndAbstracts_from_5000000_to_6000000.json';
-testfile = './jsondata/EMBEDDED_catsAndAbstracts_from_6000000_to_7000000.json';
-testfile = './jsondata/EMBEDDED_catsAndAbstracts_from_7000000_to_8000000.json';
-testfile = './jsondata/EMBEDDED_catsAndAbstracts_from_8000000_to_9000000.json';
-testfile = ''; #small safeguard in case i fire up this script by accident.
+testfile = './jsondata/00_EMBEDDED_catsAndAbstracts_from_0_to_1000.json';
 
 testfile = open(testfile, 'rb');
 print('loading data from json');
@@ -167,11 +136,6 @@ for o in objects:
         else:
             print('NO STOPWORDS AVAILABLE FOR LANG = ' + lang + '. SKIPPING');
 
-        # dataObject.append({'URI': uri,
-        #                    'embeddedfrom': tag,
-        #                    'text': text,
-        #                     });
-
         stored += 1;
         if stored%1000 == 0:
             print('parsed ' + str(stored) + ' entities');
@@ -187,14 +151,10 @@ for o in objects:
     if proctotal%1000 == 0:
         print('procd total of ' + str(proctotal) + ' records');
 
-# print(dataObject);
-#sys.exit();
 
 print('loading data into milvus');
 res = dbClient.insert(collection_name = COLLECTIONNAME, data = dataObject);
 print(res);
-#free memory
-# del(dataObject);
 testfile.close();
 
 #build index
@@ -232,40 +192,3 @@ res = dbClient.search(
     );
 
 print(res);
-
-# print('indexing');
-# #upon loading data from files, we need to index vector fields.
-# indexParams = MilvusClient.prepare_index_params();
-# indexParams.add_index(
-#     field_name = 'vector',
-#     index_type = 'IVF_FLAT',
-#     index_name = 'vector_index',
-#     metric = 'COSINE',
-#     params = {'nlist': 128},
-# );
-#
-# dbClient.create_index(
-#     collection_name = COLLECTIONNAME,
-#     index_params = indexParams,
-# );
-
-# print('performing a search');
-# #try a asimple search?..
-# strtQuery = time.time();
-# res = dbClient.search(
-#     collection_name = COLLECTIONNAME,
-#     data = embedding_fn.encode_queries(['Mitteldichte Faserplatte',
-#                                         'a movie',
-#                                         'Canada',
-#                                         'A programming language for high performance applications',
-#                                         '.app is a gTLD (generic top-level domain) in ICANN’s New gTLD Program. Google purchased the gTLD in an ICANN Auction of Last Resort in February 2015. The TLD is of interest due to its utility in regards to branding mobile, web, and other applications.',
-#                                         '.app ist eine gTLD (generic top level domain) in ICANNs neuem gTLD Programm. Google kaufte diese gTLD im Rahmen einer ICANN Auction of last resort im Februar 2015. Diese TLD ist interessant, da sie für das Branding von mobilen, Web- und andere Applikationen genutzt werden kann.']),
-#     limit = 3,
-#     # output_fields = ['text', 'embeddedfrom', 'URI'],
-#     output_fields = ['URI'],
-#     );
-# stpQuery = time.time();
-#
-# print(res);
-#
-# print('query took ' + str(stpQuery - strtQuery) + ' s');

@@ -59,22 +59,12 @@ embedding_fn = SentenceTransformerEmbeddingFunction(
     );
 
 #input data from external file
-testfile = './jsondata/EMBEDDED_catsAndAbstracts_from_0_to_1000000.json';
-# testfile = './jsondata/EMBEDDED_catsAndAbstracts_from_1000000_to_2000000.json';
-# testfile = './jsondata/00_EMBEDDED_catsAndAbstracts_from_0_to_1000.json';
-testfile = './jsondata/EMBEDDED_catsAndAbstracts_from_2000000_to_3000000.json';
-testfile = './jsondata/EMBEDDED_catsAndAbstracts_from_3000000_to_4000000.json';
-testfile = './jsondata/EMBEDDED_catsAndAbstracts_from_4000000_to_5000000.json';
-testfile = './jsondata/EMBEDDED_catsAndAbstracts_from_5000000_to_6000000.json';
-testfile = './jsondata/EMBEDDED_catsAndAbstracts_from_6000000_to_7000000.json';
-testfile = './jsondata/EMBEDDED_catsAndAbstracts_from_7000000_to_8000000.json';
-testfile = './jsondata/EMBEDDED_catsAndAbstracts_from_8000000_to_9000000.json';
+testfile = './jsondata/00_EMBEDDED_catsAndAbstracts_from_0_to_1000.json';
 
 testfile = open(testfile, 'rb');
 print('loading data from json');
 #dataObject = json.load(testfile);
 dataObject = [];
-#objects = ijson.items(testfile, 'vector');
 objects = json_stream.load(testfile);
 print(dir(objects));
 print('loop through objects');
@@ -109,7 +99,6 @@ for o in objects:
         print('procd total of ' + str(proctotal) + ' records');
 
 print(dataObject);
-#sys.exit();
 testfile.close();
 
 print('loading data into milvus');

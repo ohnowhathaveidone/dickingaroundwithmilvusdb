@@ -17,10 +17,14 @@ pip install -r requirements.txt
 ## scripts  
 testEmbeddings.py  
 - run some tests to see what milvus will throw at you  
+
 spinMilvusAsServer.py  
 - load a database into milvus  
 - start a FastAPI server to accept seach queries as http requests  
 - uses milvus LITE -> docker version for standalone in progress  
+
+testRequest.py  
+- template for a request  
 
 ## data  
 you can get more serious databases from  
