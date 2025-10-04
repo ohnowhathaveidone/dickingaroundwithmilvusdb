@@ -7,10 +7,9 @@ import sys
 model = SentenceTransformer('LaBSE');
 
 phrases = [
-    "Cadenberge", #test
-    "Ein bequemer Stuhl mit hoher Rückenlehne aus massivem Eichenholz.", # Your product description in German
-    "A comfortable chair with a high backrest, often used in offices and dining rooms. It is typically made of wood.", # The DBpedia description in English
-    "Une chaise confortable en chêne massif avec un dossier haut.", #description in french (self-translated)
+    "Ein bequemer Stuhl mit hoher Rückenlehne aus massivem Eichenholz.", #product description in German
+    "A comfortable chair with a high backrest, often used in offices and dining rooms. It is typically made of wood.", # a description in English
+    "Une chaise confortable en chêne massif avec un dossier haut.", #description in french
     "Une chaise confortable avec un dossier haut, fabriquée en chêne massif.", #... avec une structure plus similaire
     "Heute war das Wetter immer noch recht heiss. Ab Mittwoch soll es dann kühler werden.", #and an unrelated sentence in german
     "Trotz des heissen Wetters war es heute angenehm, auf einem bequemen Stuhl mit hoher Rückenlehne, aus massiver Eiche zu sitzen.", #a somewhat related sentence
@@ -23,7 +22,6 @@ for p in phrases:
     print(str(len(embeddings[-1])));
 
 print(embeddings[0]);
-sys.exit();
 
 for i in range(1, len(phrases)):
     cos_score = util.cos_sim(embeddings[0], embeddings[i]);
