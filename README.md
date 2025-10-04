@@ -20,6 +20,7 @@ testEmbeddings.py
 spinMilvusAsServer.py  
 - load a database into milvus  
 - start a FastAPI server to accept seach queries as http requests  
+- uses milvus LITE -> docker version for standalone in progress  
 
 ## data  
 you can get more serious databases from  

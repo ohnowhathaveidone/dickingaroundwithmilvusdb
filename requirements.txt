@@ -1,0 +1,7 @@
+langdetect
+sentence_transformers
+stopwordsiso
+urllib
+pymilvus
+fastAPI
+uvicorn
