@@ -27,6 +27,7 @@ testRequest.py
 - template for a request  
 
 ## data  
-you can get more serious databases from  
+you can get more serious databases and a file with the first 1000 entries from dbpedia (with mebddings) from  
 [zenodo](https://doi.org/10.5281/zenodo.17266309)  
+copy the json file into ./jsondata/
 
